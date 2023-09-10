@@ -23,8 +23,6 @@
 ## Python learning Doc
 [Python Learning code samples](python/doc/python.md)
 
-## DataFrame Document
-[document](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html)
 
 ## Sample Mermaid Diagram
 

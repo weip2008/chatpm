@@ -1,6 +1,6 @@
 """
-__new__(cls): construct the object
-__init__(self): initializing the object 
+__new__(cls): construct the object, must return object
+__init__(self): initializing the object, return nothing
 """
 
 class A:
@@ -25,17 +25,18 @@ class D(object):
         return B()
 
 class E:
-    def __init__(self):
-        print('E.__init__() is called')
+    def __new__(self):
+        print('E.__new__() is called')
         return 33
 
 if __name__ == '__main__':
     x = A()
     y = B()
     z = C()
-    print(z)
+    print(z,type(z))
     x = D()
     print(x)
     print(type(x))
-    # x = E()
+    x = E()
+    print(x, type(x))
 
