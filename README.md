@@ -30,16 +30,25 @@ graph TB
 
 A[WHAT EVER]
 B(SECOND TRY)
-A-->B
-
+C{condition}
+Start-->C
+C--True-->A
+C--False-->B
+A-->End
+B-->End
 ```
 
 ```mermaid
 classDiagram
+  class Animal{
+    name:str
+    breed:str
+    age:int
+  }
   class Dog {
-    name: String
-    breed: String
     bark()
     swim()
   }
+
+Animal <|-- Dog
 ```
