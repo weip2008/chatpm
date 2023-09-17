@@ -1,6 +1,8 @@
 """
 __new__(cls): construct the object
 __init__(self): initializing the object 
+
+__new__ MUST return a object, __init__ only change values but doesn't return anything
 """
 
 class A:
@@ -33,9 +35,10 @@ if __name__ == '__main__':
     x = A()
     y = B()
     z = C()
-    print(z)
+    print(z, type(z))
     x = D()
     print(x)
     print(type(x))
-    # x = E()
+    x = E()
+    print(x)
 
