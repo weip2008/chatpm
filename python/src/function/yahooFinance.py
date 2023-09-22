@@ -3,6 +3,7 @@
 import yfinance as yf
 import matplotlib.pyplot as plt
 from datetime import datetime,timedelta
+import pandas as pd
 
 STOCK_SYMBOL = "^GSPC"
 
@@ -34,8 +35,10 @@ def save_data_to_csv(data, filename):
 def main():
     """Main function"""
     start_date=datetime.strptime('2023-09-01 09:30:00',"%Y-%m-%d %H:%M:%S")
+    data = pd.DataFrame()
     for i in range(10):
-        data = get_daily_stock_data(STOCK_SYMBOL,start_date)
+        data1 = get_daily_stock_data(STOCK_SYMBOL,start_date)
+        data = pd.concat([data, data1])
         start_date = start_date + timedelta(1)
         if data.empty:
             continue
@@ -55,7 +58,7 @@ def main():
     # # Extract the 'Date' value from the row
     # min_data = data["Close"].min()
     # print(min_data, min_close_row['Close'])
- 
+    plt.xticks(rotation=45)
     plt.show()
 
 if __name__ == "__main__":
