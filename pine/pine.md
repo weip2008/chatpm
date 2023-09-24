@@ -4,19 +4,23 @@
 
 TreadingView is best tool for automatic stock buy/sell.
 
+- [Getting Started](#getting-started)
 - [Basics](#basics)
 - [使用用户手册](#使用用户手册)
-  - [ta.ema](#taema)
-
-
+  - [ta.ema()](#taema)
+  - [overlay](#overlay)
   
+## Getting Started
+* install TreadingView software
+
 ## Basics
 * [Day-1 画图](https://www.youtube.com/watch?v=6Nz2iPXo3xg)
 ![Day-1 画图](images/pickupData.png)
 
 * create new indicator
+  - ![](images/new_indicator.png)<br>
   - ![](images/new.png)
-  - ![](images/new_indicator.png)
+  - ![](images/dataWindow.png)
   
 ```py
 # This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
@@ -34,12 +38,12 @@ plot(close)
 
 * [Day-2 金叉⋅死叉⋅报警](https://www.youtube.com/watch?v=1FxV9K9W9Vo)
 
-### ta.ema 
+### ta.ema() 
 
-function|meaning
-|---|---|
-ta|Technical Analysis
-ema|Exponential Moving Average
+name|type|meaning
+|---|---|---|
+ta|class|Technical Analysis
+ema|function|Exponential Moving Average
 
 ```py
 indicator("basic-2")
@@ -61,3 +65,9 @@ fill(line1,line2,color=color.new(c1, 80))
 ![](images/title.png)
 ![](images/fill.png)
 ![](images/alert.png)
+
+### overlay
+```py
+//@version=5
+indecator("basic02", overlay = true)
+```
