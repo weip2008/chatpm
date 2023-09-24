@@ -4,13 +4,10 @@
 
 TreadingView is best tool for automatic stock buy/sell.
 
-- [使用用户手册](#使用用户手册)
 - [Basics](#basics)
+- [使用用户手册](#使用用户手册)
   - [ta.ema](#taema)
 
-
-## 使用用户手册
-![](images/manual.png) ![](images/manual2.png)
 
   
 ## Basics
@@ -31,6 +28,9 @@ plot(close)
 
 ```
 ![](images/addChart.png)
+
+## 使用用户手册
+![](images/manual.png) ![](images/manual2.png)
 
 * [Day-2 金叉⋅死叉⋅报警](https://www.youtube.com/watch?v=1FxV9K9W9Vo)
 
