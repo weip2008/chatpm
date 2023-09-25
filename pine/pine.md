@@ -74,11 +74,11 @@ A-->TVC-->S
 Open -> new Stratege
 
 [first stratege](src/strategy01.pi)
-Save ⟹ Stratege Tester(tab) ⟹ Load your stratege ⟹ 
+Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹ 
 
-![](images/stratege.png)
+![](images/strategy.png)
 
-[MACD stratege from 邢](src/strategy02.py)
+[MACD strateg from 邢](src/strategy02.py)
 
 ## 回测
 
