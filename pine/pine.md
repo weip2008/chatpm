@@ -78,9 +78,11 @@ Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹
 
 ![](images/strategy.png)
 
-[MACD strateg from 邢](src/strategy02.py)
+[MACD strateg from 邢](src/strategy02.pi)
 
 ## 回测
 
 ### strategy.entry
 ![](images/strategy.entry.png)
+![](images/开多单.png)
+[](src/)
