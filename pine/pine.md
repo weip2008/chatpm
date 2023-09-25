@@ -11,6 +11,8 @@ TreadingView is best tool for automatic stock buy/sell.
   - [overlay](#overlay)
 - [对接交易所下单](#对接交易所下单)
 - [Stratege](#stratege)
+- [回测](#回测)
+  - [strategy.entry](#strategyentry)
   
 ## Getting Started
 * install TreadingView software
@@ -71,9 +73,14 @@ A-->TVC-->S
 
 Open -> new Stratege
 
-[first stratege](src/stratege01.pi)
+[first stratege](src/strategy01.pi)
 Save ⟹ Stratege Tester(tab) ⟹ Load your stratege ⟹ 
 
 ![](images/stratege.png)
 
-[MACD stratege from 邢](src/stratege02.py)
+[MACD stratege from 邢](src/strategy02.py)
+
+## 回测
+
+### strategy.entry
+![](images/strategy.entry.png)
