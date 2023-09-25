@@ -104,7 +104,7 @@ ATR: Average True Range
 ![](images/atr.png)
 > Source Code: [add atr to buy](src/strategy05.pine)
 
-```py
+```pinescript
 // ATR 满足上涨条件: 今天的atr大于前两天的atr
 atr = ta.atr(14)[0]>ta.atr(14)[2]
 
@@ -121,3 +121,4 @@ Add volume condition
 Accept user input
 > Source Code: [add input to replace variable](src/strategy07.pine)
 ![](images/input.png)
+![](images/basic07.png)
