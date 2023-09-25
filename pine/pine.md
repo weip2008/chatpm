@@ -19,7 +19,7 @@ TreadingView is best tool for automatic stock buy/sell.
   
 ## Getting Started
 * install TreadingView software
-[Download Website](https://www.tradingview.com/desktop/)
+> Download Website: [Download Website](https://www.tradingview.com/desktop/)
 File: TradingView.msix
 
 ## Basics
@@ -31,7 +31,7 @@ File: TradingView.msix
   - ![](images/new.png)
   - ![](images/dataWindow.png)
   
-[first indicator](src/indicator01.pine)
+> Source Code: [first indicator](src/indicator01.pine)
 
 ![](images/addChart.png)
 
@@ -47,7 +47,7 @@ name|type|meaning
 ta|class|Technical Analysis
 ema|function|Exponential Moving Average
 
-[金叉⋅死叉 buy & sell](src/indicator02.pine)
+> Source Code: [金叉⋅死叉 buy & sell](src/indicator02.pine)
 
 ![](images/title.png)
 ![](images/fill.png)
@@ -76,19 +76,20 @@ A-->TVC-->S
 
 Open -> new Stratege
 
-[first stratege](src/strategy01.pine)
+> Source Code: [first stratege](src/strategy01.pine)
 Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹ 
 
 ![](images/strategy.png)
 
-[MACD strateg from 邢](src/strategy02.pine)
+> Source Code:[MACD strateg from 邢](src/strategy02.pine)
 
 ## 回测
 
 ### strategy.entry
 ![](images/strategy.entry.png)
 ![](images/开多单.png)
-[自动开单平仓，回测结果](src/strategy03.pine)
+> Source Code: [自动开单平仓，回测结果](src/strategy03.pine)
+![total 97 trades](images/basic03.png)
 
 ### Strategy Properties
 ![](images/strategyProperties.png)
@@ -100,3 +101,15 @@ Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹
 ## ATR
 
 ATR: Average True Range
+![](images/atr.png)
+> Source Code: [add atr to buy](src/strategy05.pine)
+
+```py
+// ATR 满足上涨条件: 今天的atr大于前两天的atr
+atr = ta.atr(14)[0]>ta.atr(14)[2]
+
+//开多单
+if buy and atr
+    strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
+```
+![Reduce trades from 97 to 46](images/atrReduceTrade.png)
