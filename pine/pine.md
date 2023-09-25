@@ -10,9 +10,12 @@ TreadingView is best tool for automatic stock buy/sell.
   - [ta.ema()](#taema)
   - [overlay](#overlay)
 - [对接交易所下单](#对接交易所下单)
-- [Stratege](#stratege)
+- [Strategy](#strategy)
 - [回测](#回测)
   - [strategy.entry](#strategyentry)
+  - [Strategy Properties](#strategy-properties)
+- [Boolinger Band](#boolinger-band)
+- [ATR](#atr)
   
 ## Getting Started
 * install TreadingView software
@@ -28,7 +31,7 @@ File: TradingView.msix
   - ![](images/new.png)
   - ![](images/dataWindow.png)
   
-[first indicator](src/indicator01.pi)
+[first indicator](src/indicator01.pine)
 
 ![](images/addChart.png)
 
@@ -44,7 +47,7 @@ name|type|meaning
 ta|class|Technical Analysis
 ema|function|Exponential Moving Average
 
-[金叉⋅死叉 buy & sell](src/indicator02.pi)
+[金叉⋅死叉 buy & sell](src/indicator02.pine)
 
 ![](images/title.png)
 ![](images/fill.png)
@@ -69,20 +72,31 @@ T-->A-->O--API-->S
 A-->TVC-->S
 ```
 
-## Stratege
+## Strategy
 
 Open -> new Stratege
 
-[first stratege](src/strategy01.pi)
+[first stratege](src/strategy01.pine)
 Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹ 
 
 ![](images/strategy.png)
 
-[MACD strateg from 邢](src/strategy02.pi)
+[MACD strateg from 邢](src/strategy02.pine)
 
 ## 回测
 
 ### strategy.entry
 ![](images/strategy.entry.png)
 ![](images/开多单.png)
-[](src/)
+[自动开单平仓，回测结果](src/strategy03.pine)
+
+### Strategy Properties
+![](images/strategyProperties.png)
+![](images/properties.png)
+
+## Boolinger Band
+![](images/boolingerBand.png)
+
+## ATR
+
+ATR: Average True Range

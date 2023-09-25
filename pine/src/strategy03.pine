@@ -2,7 +2,7 @@
 // © jwang_531122
 
 //@version=5
-strategy("basic03", overlay=true)
+strategy("basic03", overlay=true, initial_capital = 10000)
 fast = ta.ema(close, 12)
 slow = ta.ema(close, 26)
 line1 = plot(fast,color=color.red, title='fast')

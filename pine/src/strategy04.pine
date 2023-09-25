@@ -1,0 +1,20 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © jwang_531122
+
+//@version=5
+strategy("basic04", overlay=true, margin_long=100, margin_short=100, initial_capital = 1000)
+
+ema25 = ta.ema(close, 25)
+ema100 = ta.ema(close, 100)
+l1 = plot(ema25, color=color.yellow, title='ema25')
+l2 = plot(ema100, color=color.green, title='ema100')
+buy = ta.crossover(ema25, ema100) //金叉
+sell = ta.crossover(ema100, ema25) //死叉
+if (buy)
+    strategy.entry("buy1", strategy.long,1)
+
+if (sell)
+    strategy.close("buy1", qty_percent = 100)
+c1 = (ema25>ema100) ? color.green : color.red
+
+fill(l1,l2,color=color.new(c1, 80))
