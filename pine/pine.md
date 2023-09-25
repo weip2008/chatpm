@@ -113,3 +113,11 @@ if buy and atr
     strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
 ```
 ![Reduce trades from 97 to 46](images/atrReduceTrade.png)
+
+Add volume condition
+> Source Code: [add volume codition to reduce trades](src/strategy06.pine)
+![reduce to 21](images/art+volume.png)
+
+Accept user input
+> Source Code: [add input to replace variable](src/strategy07.pine)
+![](images/input.png)

@@ -1,0 +1,32 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © jwang_531122
+
+//@version=5
+strategy("basic06", overlay=true, initial_capital = 10000)
+fastLen = input(12, 'Enter fase ema length: ')
+slowLen = input(26, 'Enter slow ema length: ')
+fast = ta.ema(close, fastLen)
+slow = ta.ema(close, slowLen)
+line1 = plot(fast,color=color.red, title='fast')
+line2 = plot(slow,color=color.yellow,title='slow')
+
+buy = ta.crossover(fast, slow) //金叉
+sell = ta.crossover(slow,fast) //死叉
+
+// ATR 满足上涨条件: 今天的atr大于前两天的atr
+atr = ta.atr(14)[0]>ta.atr(14)[2]
+
+//开多单
+if buy and atr
+    strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
+//平仓
+if sell
+    strategy.close('long1', qty_percent = 100, comment="close long1")
+
+plotchar(buy,text='buy',color=color.green)
+plotchar(sell,text='sell',color=color.red)
+
+c1 = (fast>slow) ? color.green : color.red
+
+fill(line1,line2,color=color.new(c1, 80))
+
