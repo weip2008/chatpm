@@ -122,5 +122,9 @@ Add volume condition
 
 Accept user input
 > Source Code: [add input to replace variable](src/strategy07.pine)
+Right-click ==> Strategy Properties
 ![](images/input.png)
 ![](images/basic07.png)
+
+👍😄 **Conclusion**
+> fast and slow ema length are very sensitive to number of trade, and P/L (Profit/loss).
