@@ -1,0 +1,27 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © jwang_531122
+
+//@version=5
+strategy("basic03", overlay=true, initial_capital = 10000)
+fast = ta.ema(close, 12)
+slow = ta.ema(close, 26)
+line1 = plot(fast,color=color.red, title='fast')
+line2 = plot(slow,color=color.yellow,title='slow')
+
+buy = ta.crossover(fast, slow) //金叉
+sell = ta.crossover(slow,fast) //死叉
+
+//开多单
+if buy
+    strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
+//平仓
+if sell
+    strategy.close('long1', qty_percent = 100, comment="close long1")
+
+plotchar(buy,text='buy',color=color.green)
+plotchar(sell,text='sell',color=color.red)
+
+c1 = (fast>slow) ? color.green : color.red
+
+fill(line1,line2,color=color.new(c1, 80))
+

@@ -1,0 +1,18 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © jwang_531122
+
+// @version=5
+indicator("basic-2")
+fast = ta.ema(close, 12)
+slow = ta.ema(close, 26)
+line1 = plot(fast,color=color.red, title='ema12')
+line2 = plot(slow,color=color.yellow)
+
+buy = ta.crossover(fast, slow)
+sell = ta.crossover(slow,fast)
+plotchar(buy,text='buy',color=color.green)
+plotchar(sell,text='sell',color=color.red)
+
+c1 = (fast>slow) ? color.green : color.red
+
+fill(line1,line2,color=color.new(c1, 80))
