@@ -11,7 +11,7 @@ line2 = plot(slow,color=color.yellow,title='slow')
 buy = ta.crossover(fast, slow) //金叉
 sell = ta.crossover(slow,fast) //死叉
 
-//开多单
+//开多单long
 if buy
     strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
 //平仓

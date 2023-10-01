@@ -76,12 +76,12 @@ A-->TVC-->S
 
 Open -> new Stratege
 
-> Source Code: [first stratege](src/strategy01.pine)
+> Source Code: [first strategy](src/strategy01.pine)
 Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹ 
 
 ![](images/strategy.png)
 
-> Source Code:[MACD strateg from 邢](src/strategy02.pine)
+> Source Code:[MACD strategy from 邢](src/strategy02.pine)
 
 ## 回测
 
@@ -96,6 +96,8 @@ Save ⟹ Strategy Tester(tab) ⟹ Load your strategy ⟹
 ![](images/properties.png)
 
 ## Boolinger Band
+![](images/favorite.png)
+Select Favorite first, then there is a dropdown beside the indicator tool bar
 ![](images/boolingerBand.png)
 
 ## ATR
@@ -104,7 +106,7 @@ ATR: Average True Range
 ![](images/atr.png)
 > Source Code: [add atr to buy](src/strategy05.pine)
 
-```pinescript
+```sh
 // ATR 满足上涨条件: 今天的atr大于前两天的atr
 atr = ta.atr(14)[0]>ta.atr(14)[2]
 
