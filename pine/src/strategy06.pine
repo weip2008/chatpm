@@ -14,8 +14,11 @@ sell = ta.crossover(slow,fast) //死叉
 // ATR 满足上涨条件: 今天的atr大于前两天的atr
 atr = ta.atr(14)[0]>ta.atr(14)[2]
 
+// 满足成交量上涨条件
+vol = volume > volume[2]
+
 //开多单
-if buy and atr
+if buy and atr and vol
     strategy.entry('long1', strategy.long, 1)  //做多， 交易数量1
 //平仓
 if sell

@@ -2,7 +2,7 @@
 // © jwang_531122
 
 //@version=5
-strategy("basic06", overlay=true, initial_capital = 10000)
+strategy("basic07", overlay=true, initial_capital = 10000)
 fastLen = input(12, 'Enter fase ema length: ')
 slowLen = input(26, 'Enter slow ema length: ')
 fast = ta.ema(close, fastLen)
