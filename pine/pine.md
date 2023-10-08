@@ -16,8 +16,10 @@ TreadingView is best tool for automatic stock buy/sell.
   - [Strategy Properties](#strategy-properties)
 - [Boolinger Band](#boolinger-band)
 - [ATR](#atr)
+- [MACD](#macd)
   
 ## Getting Started
+[TradingView Pine script language Document](https://www.tradingview.com/pin-script-docs)
 * install TreadingView software
 > Download Website: [Download Website](https://www.tradingview.com/desktop/)
 File: TradingView.msix
@@ -128,3 +130,6 @@ Right-click ==> Strategy Properties
 
 👍😄 **Conclusion**
 > fast and slow ema length are very sensitive to number of trade, and P/L (Profit/loss).
+
+## MACD
+MACD, which stands for Moving Average Convergence Divergence

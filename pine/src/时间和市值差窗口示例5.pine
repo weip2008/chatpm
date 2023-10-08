@@ -1,0 +1,24 @@
+//@version=5
+indicator(title="时间和市值差窗口示例5", shorttitle="窗口示例", overlay=true)
+
+// 输入窗口的时间范围（以分钟为单位）
+windowTimeStart = input(defval=900, title="窗口开始时间（分钟）")
+windowTimeEnd = input(defval=1200, title="窗口结束时间（分钟）")
+
+// 输入窗口的市值差范围
+windowMarketCapMin = input(defval=1000000, title="窗口最小市值差")
+windowMarketCapMax = input(defval=5000000, title="窗口最大市值差")
+
+// 计算当前时间（以分钟为单位）
+currentMinute = hour * 60 + minute
+
+// 计算市值差
+marketCapDiff = close * volume
+
+// 判断买卖点是否在窗口内
+inTimeWindow = currentMinute >= windowTimeStart and currentMinute <= windowTimeEnd
+inMarketCapWindow = marketCapDiff >= windowMarketCapMin and marketCapDiff <= windowMarketCapMax
+
+// 绘制买卖点标记
+plotshape(series=inTimeWindow and inMarketCapWindow, location=location.belowbar, color=color.green, style=shape.triangleup, title="买入点")
+plotshape(series=inTimeWindow and inMarketCapWindow, location=location.abovebar, color=color.red, style=shape.triangledown, title="卖出点")
