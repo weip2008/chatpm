@@ -19,7 +19,7 @@ TreadingView is best tool for automatic stock buy/sell.
 - [MACD](#macd)
   
 ## Getting Started
-[TradingView Pine script language Document](https://www.tradingview.com/pin-script-docs)
+[TradingView Pine script language Document](https://www.tradingview.com/pine-script-docs/en/v5/Introduction.html)
 * install TreadingView software
 > Download Website: [Download Website](https://www.tradingview.com/desktop/)
 File: TradingView.msix
