@@ -3,10 +3,11 @@ from pandas_datareader import data as pdr
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
-import yfinance as yfin
+# import yfinance as yfin
+import yahoo_fin as yfin
 
-yfin.pdr_override()
-# Set the API 
+# yfin.pdr_override()
+# Set the API
 #data_source = "yahoo"
 
 # Set the API parameters
@@ -25,4 +26,3 @@ df.head(5)
 fig, ax1 = plt.subplots(figsize=(12, 8))
 plt.plot(df.index, df.Close)
 plt.show()
-
