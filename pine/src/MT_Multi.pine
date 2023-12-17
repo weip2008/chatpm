@@ -1,0 +1,22 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © weip2008
+
+//@version=5
+indicator("MT_Multi Timeframe Donchian Channel V1", "MT_DC", overlay = true)
+
+Htf = input.timeframe("D", "Select Timeframe")
+length = input.int(50, "Length", minval = 1)
+
+lower = ta.lowest(length)
+upper = ta.highest(length)
+
+lowerHtf = request.security(syminfo.tickerid, Htf, lower[1], barmerge.gaps_on, barmerge.lookahead_on)
+upperHtf = request.security(syminfo.tickerid, Htf, upper[1], barmerge.gaps_on, barmerge.lookahead_on)
+
+middleHtf = math.avg(lowerHtf, upperHtf)
+
+plot(middleHtf, "Middle", color.orange)
+pLower = plot(lowerHtf, "Lower", color.aqua)
+pUpper = plot(upperHtf, "Upper", color.aqua)
+
+fill(pLower, pUpper, color = color.new(color.aqua, 90))
