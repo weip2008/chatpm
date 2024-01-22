@@ -35,3 +35,6 @@ If the bid for an option is $2.50, and the ask is $2.70, the bid-ask spread is $
 If you want to sell the option, you might receive $2.50 (the bid price).
 If you want to buy the option, you might pay $2.70 (the ask price).
 Traders often pay attention to bid and ask prices when making trading decisions. The bid and ask prices, along with other factors, contribute to the overall dynamics of the options market.
+
+
+![](Call_vs_Put_Options_info.png)
