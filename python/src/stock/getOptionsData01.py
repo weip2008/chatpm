@@ -10,8 +10,8 @@ puts = options.get_puts(symbol, date)
 new_calls = calls[["Contract Name", "Strike", "Last Price", "Bid", "Ask"]]
 new_puts = puts[["Contract Name", "Strike", "Last Price", "Bid", "Ask"]]
 
-calls.to_csv("python/data/LULU_calls_selected.csv")
-puts.to_csv("python/data/LULU_puts_selected.csv")
+calls.to_csv("python/data/LULU_calls.csv")
+puts.to_csv("python/data/LULU_puts.csv")
 
 print(calls)
 print("\n---------------------------------------------------\n")
