@@ -1,16 +1,25 @@
 from yahoo_fin import options
-# Get call dates for NFLX expiring on 12/31/2023
-calls = options.get_calls("LULU", "01/26/2024")
-#calls = options.get_calls("NFLX", "1/19/2024")
 
-# Get put dates for NFLX expiring on 12/31/2023
-puts = options.get_puts("LULU", "01/26/2024")
-#puts = options.get_puts("NFLX", "1/19/2024")
+symbol = "LULU"
+date = "01/26/2024"
 
-calls.to_csv("python/data/LULU_calls.csv")
-puts.to_csv("python/data/LULU_puts.csv")
+calls = options.get_calls(symbol, date)
+puts = options.get_puts(symbol, date)
+
+# Extract the desired columns
+new_calls = calls[["Contract Name", "Strike", "Last Price", "Bid", "Ask"]]
+new_puts = puts[["Contract Name", "Strike", "Last Price", "Bid", "Ask"]]
+
+calls.to_csv("python/data/LULU_calls_selected.csv")
+puts.to_csv("python/data/LULU_puts_selected.csv")
 
 print(calls)
-print("---------------------------------------------------")
+print("\n---------------------------------------------------\n")
 print(puts)
 
+print("\n========================================================\n")
+
+
+print(new_calls)
+print("\n---------------------------------------------------\n")
+print(new_puts)
