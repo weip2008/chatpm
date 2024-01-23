@@ -37,4 +37,5 @@ If you want to buy the option, you might pay $2.70 (the ask price).
 Traders often pay attention to bid and ask prices when making trading decisions. The bid and ask prices, along with other factors, contribute to the overall dynamics of the options market.
 
 
-![](Call_vs_Put_Options_info.png)
+![](images/Call_vs_Put_Options_info.png)
+![](images/optionCloseDayComparison.png)
