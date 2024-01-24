@@ -1,5 +1,5 @@
 import warnings
-from datetime import date
+from datetime import date, datetime
 from yahoo_fin import options
 from yahoo_fin.stock_info import get_live_price
 #import yfinance as yf
@@ -77,6 +77,9 @@ contractDate = "01/26/2024"
 path = "python/data/"
 today = date.today()
 print(f"Today's date is {today.strftime('%m-%d-%Y')}")
+now = datetime.now()
+currentDatetime = now.strftime("%m%d%Y-%H%M")
+print(f"Current date time is " + currentDatetime)
 
 # Get calls and puts for given stock at contract date
 calls, puts = get_calls_and_puts(symbol, contractDate)
@@ -112,12 +115,14 @@ print(f"The current price of {symbol} is ${current_price:.2f}")
 filtered_calls = filter_rows_by_price(calculated_calls, current_price)
 filtered_puts = filter_rows_by_price(calculated_puts, current_price)
 
-print("\n========================= Filtered CALLS ===============================")
+print(f"\n======================= Filtered CALLS for ${current_price}===========================" )
 print(filtered_calls)
-print("\n========================= Filtered PUTS ===============================")
+print(f"\n======================= Filtered PUTS for ${current_price}============================")
 print(filtered_puts)
 
-fileName = path+symbol+"_calls_filtered_"+today.strftime('%m-%d-%Y')+".csv"
+#fileName = path+symbol+"_calls_filtered_"+today.strftime('%m-%d-%Y')+".csv"
+fileName = path+symbol+"_calls_filtered_"+currentDatetime+".csv"
 filtered_calls.to_csv(fileName)
-fileName = path+symbol+"_puts_filtered_"+today.strftime('%m-%d-%Y')+".csv"
+#fileName = path+symbol+"_puts_filtered_"+today.strftime('%m-%d-%Y')+".csv"
+fileName = path+symbol+"_puts_filtered_"+currentDatetime+".csv"
 filtered_puts.to_csv(fileName)
