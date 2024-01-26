@@ -115,9 +115,9 @@ for symbol in symbolList:
     print("\n========================= Calculated PUTS ===============================")
     print(calculated_puts)
 
-    fileName = path+symbol+"_calls_calculated_"+today.strftime('%m-%d-%Y')+".csv"
+    fileName = path+symbol+"_calls_calculated_"+currentDatetime+".csv"
     calculated_calls.to_csv(fileName)
-    fileName = path+symbol+"_puts_calculated_"+today.strftime('%m-%d-%Y')+".csv"
+    fileName = path+symbol+"_puts_calculated_"+currentDatetime+".csv"
     calculated_puts.to_csv(fileName)
 
     print("\n========================================================\n")
