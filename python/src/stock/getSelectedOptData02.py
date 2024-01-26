@@ -29,13 +29,14 @@ def add_sign_column(df, given_price):
     # create a new column "Sign" and calculate its value
     # df["Sign"] = (df["Bid"] + df["Ask"]) / 2.0 / df["Strike"]
     #df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
-    df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / given_price.astype(float)
+    df["Sign1"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / given_price.astype(float)
     # Round the "Sign" column to 6 decimal places
-    df["Sign"] = df["Sign"].apply(lambda x: round(x, 6))
+    df["Sign1"] = df["Sign1"].apply(lambda x: round(x, 6))
     
     # Convert the "Sign" column to a string with 6 decimal places
-    df["Sign"] = df["Sign"].apply(lambda x: f"{x:.6f}")
+    df["Sign1"] = df["Sign1"].apply(lambda x: f"{x:.6f}")
 
+    df["Sign2"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Last Price"].astype(float)
     # Replace NaN with 0
     df = df.fillna(0)
 
@@ -69,11 +70,12 @@ print(f"Current date time is " + currentDatetime)
 
 for symbol in symbolList:
     #symbol = "LULU"
+    print("\n========================================================\n")
     print("\n\nsymbol:"+symbol)
     
     current_price = get_live_price(symbol)
     print(f"The current price of {symbol} is ${current_price:.2f}")
-    print("\n========================================================\n")
+    
     
     # Get calls and puts for given stock at contract date
     calls, puts = get_calls_and_puts(symbol, contractDate)
