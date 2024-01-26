@@ -31,6 +31,12 @@ def add_sign_column(df):
     df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
     # Round the "Sign" column to 6 decimal places
     df["Sign"] = df["Sign"].apply(lambda x: round(x, 6))
+    
+    # Convert the "Sign" column to a string with 6 decimal places
+    df["Sign"] = df["Sign"].apply(lambda x: f"{x:.6f}")
+
+    # Replace NaN with 0
+    df = df.fillna(0)
 
     # return the updated DataFrame
     return df
