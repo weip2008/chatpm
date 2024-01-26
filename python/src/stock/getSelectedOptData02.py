@@ -29,6 +29,9 @@ def add_sign_column(df):
     # create a new column "Sign" and calculate its value
     # df["Sign"] = (df["Bid"] + df["Ask"]) / 2.0 / df["Strike"]
     df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
+    # Round the "Sign" column to 6 decimal places
+    df["Sign"] = df["Sign"].apply(lambda x: round(x, 6))
+
     # return the updated DataFrame
     return df
 
