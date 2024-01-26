@@ -25,10 +25,11 @@ def get_calls_and_puts(symbol: str, date: str) -> tuple:
 
     return new_calls, new_puts
 
-def add_sign_column(df):
+def add_sign_column(df, given_price):
     # create a new column "Sign" and calculate its value
     # df["Sign"] = (df["Bid"] + df["Ask"]) / 2.0 / df["Strike"]
-    df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
+    #df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
+    df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / given_price.astype(float)
     # Round the "Sign" column to 6 decimal places
     df["Sign"] = df["Sign"].apply(lambda x: round(x, 6))
     
@@ -57,28 +58,6 @@ def filter_rows_by_price(df, given_price):
 
     return result
 
-def filter_rows_by_name(df, given_price):
-
-    # Extract the price from the Contract Name column
-    df["Price"] = df["Contract Name"].str[-8:].astype(float) / 1000.0
-    # Set the contract name column as the index
-    #df = df.set_index("Price")
-    
-    # Get the 5 rows with strike price lower than the given price
-    lower_rows = df[df.index < given_price].tail(5)
-
-    # Get the 5 rows with strike price higher than the given price
-    higher_rows = df[df.index > given_price].head(5)
-
-    # Combine the two DataFrames
-    result = pd.concat([lower_rows, higher_rows])
-    
-    # Remove the Price column
-    result = result.drop(columns=["Price"])
-    
-    return result
-
-
 contractDate = "01/26/2024"
 #path = "python/data/"
 path = "d:/chatpm/python/data/"
@@ -91,6 +70,10 @@ print(f"Current date time is " + currentDatetime)
 for symbol in symbolList:
     #symbol = "LULU"
     print("\n\nsymbol:"+symbol)
+    
+    current_price = get_live_price(symbol)
+    print(f"The current price of {symbol} is ${current_price:.2f}")
+    print("\n========================================================\n")
     
     # Get calls and puts for given stock at contract date
     calls, puts = get_calls_and_puts(symbol, contractDate)
@@ -107,8 +90,8 @@ for symbol in symbolList:
     print(puts)
 """
  
-    calculated_calls = add_sign_column(calls)
-    calculated_puts = add_sign_column(puts)
+    calculated_calls = add_sign_column(calls, current_price)
+    calculated_puts = add_sign_column(puts,current_price)
 
     print("\n========================= Calculated CALLS ===============================")
     print(calculated_calls)
@@ -120,9 +103,6 @@ for symbol in symbolList:
     fileName = path+symbol+"_puts_calculated_"+currentDatetime+".csv"
     calculated_puts.to_csv(fileName)
 
-    print("\n========================================================\n")
-    current_price = get_live_price(symbol)
-    print(f"The current price of {symbol} is ${current_price:.2f}")
 
     filtered_calls = filter_rows_by_price(calculated_calls, current_price)
     filtered_puts = filter_rows_by_price(calculated_puts, current_price)
