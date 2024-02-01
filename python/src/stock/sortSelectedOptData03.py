@@ -1,5 +1,5 @@
 import warnings
-from datetime import date, datetime
+from datetime import date, datetime,timedelta
 from yahoo_fin import options
 from yahoo_fin.stock_info import get_live_price
 #import yfinance as yf
@@ -62,11 +62,16 @@ def calculatePut(df, given_price):
     return p
 
     
-contractDate = "02/02/2024"
 #path = "python/data/"
 path = "d:/chatpm/python/data/"
 today = date.today()
 print(f"Today's date is {today.strftime('%m-%d-%Y')}")
+next_friday = today + timedelta((4 - today.weekday()) % 7)
+next_friday_string = next_friday.strftime("%m/%d/%Y")
+print("Next Friday is: "+next_friday_string)
+#contractDate = "02/02/2024"
+contractDate = next_friday_string
+
 now = datetime.now()
 currentDatetime = now.strftime("%m%d%Y-%H%M")
 print(f"Current date time is " + currentDatetime)
