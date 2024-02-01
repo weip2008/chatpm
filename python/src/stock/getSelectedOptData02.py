@@ -31,12 +31,16 @@ def add_sign_column(df, given_price):
     #df["Sign"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Strike"].astype(float)
     df["Sign1"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / given_price.astype(float)
     # Round the "Sign" column to 6 decimal places
-    df["Sign1"] = df["Sign1"].apply(lambda x: round(x, 6))
-    
+    df["Sign1"] = df["Sign1"].apply(lambda x: round(x, 6))    
     # Convert the "Sign" column to a string with 6 decimal places
     df["Sign1"] = df["Sign1"].apply(lambda x: f"{x:.6f}")
 
     df["Sign2"] = (df["Bid"].astype(float) + df["Ask"].astype(float)) / 2.0 / df["Last Price"].astype(float)
+      # Round the "Sign" column to 6 decimal places
+    df["Sign2"] = df["Sign2"].apply(lambda x: round(x, 6))    
+    # Convert the "Sign" column to a string with 6 decimal places
+    df["Sign2"] = df["Sign2"].apply(lambda x: f"{x:.6f}")
+
     # Replace NaN with 0
     df = df.fillna(0)
 

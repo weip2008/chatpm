@@ -1,7 +1,7 @@
 from yahoo_fin import options
 
 symbol = "LULU"
-date = "01/26/2024"
+date = "02/02/2024"
 
 calls = options.get_calls(symbol, date)
 puts = options.get_puts(symbol, date)
