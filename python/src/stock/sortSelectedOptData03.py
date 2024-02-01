@@ -112,6 +112,7 @@ print(dataValue)
 sorted_dataValue = sorted(dataValue.items(), key=lambda x:x[1], reverse=True )
 #print(sorted_dataValue)
 
+print("\n=================== Sorted Result =======================")  
 print("{:<10} {:<10}".format('Symbol', 'Value'))
 print("-" * 20)
 for item in sorted_dataValue:
