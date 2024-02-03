@@ -4,7 +4,7 @@ from yahoo_fin import options
 from yahoo_fin.stock_info import get_live_price
 #import yfinance as yf
 import pandas as pd
-import numpy as np
+#import numpy as np
 
 warnings.filterwarnings('ignore')
 
@@ -12,6 +12,20 @@ symbolList = []
 #symbolList = ["BUD", "PBR", "TSM", "BABA", "NVO", "PDD", "SHEL", "SHOP", "SONY", "HSBC", "AZN", "ASML"]
 #symbolList = ["ASML","BUD"]
 dataValue = {}
+
+def read_file_contents(file_name):
+    try:
+        with open(file_name, 'r', encoding='utf-8-sig') as file:
+            contents = file.read()
+            file.close
+            return contents
+    except FileNotFoundError:
+        print(f"Error: File '{file_name}' not found.")
+        return None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
 
 
 def get_calls_and_puts(symbol: str, date: str) -> tuple:
@@ -67,19 +81,32 @@ today = date.today()
 print(f"Today's date is {today.strftime('%m-%d-%Y')}")
 next_friday = today + timedelta((4 - today.weekday()) % 7)
 next_friday_string = next_friday.strftime("%m/%d/%Y")
-print("Next Friday is "+next_friday_string)
-#contractDate = "02/02/2024"
-contractDate = next_friday_string
+#print("Next Friday is "+next_friday_string)
 
 now = datetime.now()
 currentDatetime = now.strftime("%m%d%Y-%H%M")
 print(f"Current date time is " + currentDatetime)
 
-fileName = path+"blacklist.txt"
-with open(fileName, "r", encoding='utf-8-sig') as f:
-    for line in f:
-        symbolList.append(line.strip())
+# If it's Friday and after 4PM (16:00), then jump to next Friday
+if now.weekday() == 4 and now.time() > datetime.time(datetime(1, 1, 1, 16, 0)):
+    next_friday += timedelta(7)
+    next_friday_string = next_friday.strftime("%m/%d/%Y")
+    print("It's after 4 PM on Friday, so jumping to the following Friday: " + next_friday_string)
+#contractDate = "02/02/2024"
+contractDate = next_friday_string
+print("Contract date:"+contractDate)
 
+blacklist_file = path+"blacklist.txt"
+# Read the filename from the blacklist file
+file_to_read = read_file_contents(blacklist_file)
+
+if file_to_read:
+    # Read the contents of the specified file
+    listFileName = path+file_to_read
+    with open(listFileName, "r", encoding='utf-8-sig') as f:
+        for line in f:
+            symbolList.append(line.strip())
+    f.close
 print(f"Symbol list: {symbolList}")
 
 for symbol in symbolList:
@@ -108,8 +135,8 @@ for symbol in symbolList:
         
         c = calculateCall(filtered_calls, current_price)
         p = calculatePut(filtered_puts, current_price)
-        k = (c+p)/2.0
-        r = k/current_price
+        #k = (c+p)/2.0
+        r = (c+p)/2.0/current_price * 1000
         dataValue[symbol] = r
         
     except ValueError:
@@ -132,9 +159,9 @@ for item in sorted_dataValue:
 
 fileName = path+"Options_sorted_"+currentDatetime+".txt"
 with open(fileName, 'w') as f:
-    f.write("{:<10} {:<10}\n".format('Symbol', 'Value'))
+    f.write("{:<8} {:<8}\n".format('Symbol', 'Value'))
     f.write("-" * 20 + "\n")
 
     for item in sorted_dataValue:
-        f.write("{:<10} {:.8f}\n".format(item[0], item[1]))
+        f.write("{:<8} {:.8f}\n".format(item[0], item[1]))
 f.close()
