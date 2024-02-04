@@ -5,8 +5,12 @@ from yahoo_fin.stock_info import get_live_price
 #import yfinance as yf
 import pandas as pd
 #import numpy as np
+import configparser
+import os
 
 warnings.filterwarnings('ignore')
+
+global asklimit, bidlimit, askbidratio, lowestbid
 
 symbolList = []
 #symbolList = ["BUD", "PBR", "TSM", "BABA", "NVO", "PDD", "SHEL", "SHOP", "SONY", "HSBC", "AZN", "ASML"]
@@ -55,113 +59,169 @@ def filter_rows_by_price(df, given_price):
     return result
 
 def calculateCall(df, given_price):
+    global asklimit, bidlimit, askbidratio, lowestbid
+    
     # Get the the last row with strike price higher than the given price
     higher_rows = df[df["Strike"] >= given_price].head(1)
     index = higher_rows.index[0]
     bid = higher_rows.at[index, "Bid"]
     ask = higher_rows.at[index, "Ask"]
+    if (bid < lowestbid):
+        return None
+    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+        return None
     cp = (bid + ask) / 2.0
     c = cp/given_price
     return c
 
 def calculatePut(df, given_price):
+    global asklimit, bidlimit, askbidratio, lowestbid
+    
     # Get the last row with strike price lower than the given price
     lower_rows = df[df["Strike"] <= given_price].tail(1)
     index = lower_rows.index[0]
     bid = lower_rows.at[index, "Bid"]
     ask = lower_rows.at[index, "Ask"]
+    if (bid < lowestbid):
+        return None
+    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+        return None
     pp = (bid + ask) / 2.0
     p = pp/given_price
     return p
 
+def main():   
+    global asklimit, bidlimit, askbidratio,lowestbid
     
-#path = "python/data/"
-path = "d:/chatpm/python/data/"
-today = date.today()
-print(f"Today's date is {today.strftime('%m-%d-%Y')}")
-next_friday = today + timedelta((4 - today.weekday()) % 7)
-next_friday_string = next_friday.strftime("%m/%d/%Y")
-#print("Next Friday is "+next_friday_string)
+    # Get the absolute path to the script's directory
+    script_directory = os.path.dirname(os.path.abspath(__file__))
 
-now = datetime.now()
-currentDatetime = now.strftime("%m%d%Y-%H%M")
-print(f"Current date time is " + currentDatetime)
+    # Combine with the filename to get the full path
+    config_file_path = os.path.join(script_directory, 'sortoptions.ini')
 
-# If it's Friday and after 4PM (16:00), then jump to next Friday
-if now.weekday() == 4 and now.time() > datetime.time(datetime(1, 1, 1, 16, 0)):
-    next_friday += timedelta(7)
+    # Create a ConfigParser object
+    config = configparser.ConfigParser()
+
+    # Read the INI file
+    config.read(config_file_path)
+
+    """ config = configparser.ConfigParser()
+    config.read('d:/chatpm/python/src/sortoptions.ini')
+    """
+    # Access values from the 'logging' section
+    log_level = config.get('logging', 'level')
+    log_file = config.get('logging', 'file')
+    path = config.get('sortoptions','path')
+    listfile = config.get('sortoptions', 'listfile')
+    blacklist_file = path+listfile 
+    asklimit = float(config.get('filters', 'asklimit'))
+    bidlimit = float(config.get('filters', 'bidlimit'))
+    askbidratio = float(config.get('filters', 'askbidratio'))
+    lowestbid = float(config.get('filters', 'lowestbid'))
+
+
+    #path = "python/data/"
+    #path = "d:/chatpm/python/data/"
+    today = date.today()
+    print(f"Today's date is {today.strftime('%m-%d-%Y')}")
+    next_friday = today + timedelta((4 - today.weekday()) % 7)
     next_friday_string = next_friday.strftime("%m/%d/%Y")
-    print("It's after 4 PM on Friday, so jumping to the following Friday: " + next_friday_string)
-#contractDate = "02/02/2024"
-contractDate = next_friday_string
-print("Contract date:"+contractDate)
+    #print("Next Friday is "+next_friday_string)
 
-blacklist_file = path+"blacklist.txt"
-# Read the filename from the blacklist file
-file_to_read = read_file_contents(blacklist_file)
+    now = datetime.now()
+    currentDatetime = now.strftime("%m%d%Y-%H%M")
+    print(f"Current date time is " + currentDatetime)
 
-if file_to_read:
-    # Read the contents of the specified file
-    listFileName = path+file_to_read
-    with open(listFileName, "r", encoding='utf-8-sig') as f:
-        for line in f:
-            symbolList.append(line.strip())
-    f.close
-print(f"Symbol list: {symbolList}")
+    # If it's Friday and after 4PM (16:00), then jump to next Friday
+    if now.weekday() == 4 and now.time() > datetime.time(datetime(1, 1, 1, 16, 0)):
+        next_friday += timedelta(7)
+        next_friday_string = next_friday.strftime("%m/%d/%Y")
+        print("It's after 4 PM on Friday, so jumping to the following Friday: " + next_friday_string)
+    #contractDate = "02/02/2024"
+    contractDate = next_friday_string
+    print("Contract date:"+contractDate)
 
-for symbol in symbolList:
-    print("\n================================================================\n")
-    print("\nSymbol:"+symbol)
-    
-    current_price = get_live_price(symbol)
-    print(f"Current price for {symbol} is ${current_price:.2f}")
-    
-    try:    
-        # Get calls and puts for given stock at contract date
-        calls, puts = get_calls_and_puts(symbol, contractDate)
+    # Read the filename from the blacklist file
+    #blacklist_file = path+"blacklist.txt"
+    file_to_read = read_file_contents(blacklist_file)
 
-        """ print("\n========================= CALLS ===============================")
-        print(calls)
-        print("\n========================== PUTS ===============================")
-        print(puts) """
-    
-        filtered_calls = filter_rows_by_price(calls, current_price)
-        filtered_puts = filter_rows_by_price(puts, current_price)
+    if file_to_read:
+        # Read the contents of the specified file
+        listFileName = path+file_to_read
+        with open(listFileName, "r", encoding='utf-8-sig') as f:
+            for line in f:
+                symbolList.append(line.strip())
+        f.close
+    print(f"Symbol list: {symbolList}")
 
-        print(f"\n================== Filtered CALLS for ${current_price:.2f}====================" )
-        print(filtered_calls)
-        print(f"\n================== Filtered PUTS for ${current_price:.2f}=====================")
-        print(filtered_puts)
+    for symbol in symbolList:
+        print("\n================================================================\n")
+        print("\nSymbol:"+symbol)
         
-        c = calculateCall(filtered_calls, current_price)
-        p = calculatePut(filtered_puts, current_price)
-        #k = (c+p)/2.0
-        r = (c+p)/2.0/current_price * 1000
-        dataValue[symbol] = r
+        current_price = get_live_price(symbol)
+        print(f"Current price for {symbol} is ${current_price:.2f}")
         
-    except ValueError:
-        #code that handle the exception
-        print("No tables found!")
-        dataValue[symbol] = 0.0    
-# end of symbol list loop
+        try:    
+            # Get calls and puts for given stock at contract date
+            calls, puts = get_calls_and_puts(symbol, contractDate)
 
-""" print("\n=================== Data value pair =======================")   
-print(dataValue)   """  
+            """ print("\n========================= CALLS ===============================")
+            print(calls)
+            print("\n========================== PUTS ===============================")
+            print(puts) """
+        
+            filtered_calls = filter_rows_by_price(calls, current_price)
+            filtered_puts = filter_rows_by_price(puts, current_price)
 
-sorted_dataValue = sorted(dataValue.items(), key=lambda x:x[1], reverse=True )
-#print(sorted_dataValue)
+            print(f"\n================== Filtered CALLS for ${current_price:.2f}====================" )
+            print(filtered_calls)
+            print(f"\n================== Filtered PUTS for ${current_price:.2f}=====================")
+            print(filtered_puts)
+            
+            c = calculateCall(filtered_calls, current_price)
+            p = calculatePut(filtered_puts, current_price)
+            #k = (c+p)/2.0
+            if (c is None or p is None):
+              c,p = 0.0, 0.0
+            r = (c+p)/2.0/current_price * 1000
+            dataValue[symbol] = r
+            
+        except ValueError:
+            #code that handle the exception
+            print("No tables found!")
+            dataValue[symbol] = 0.0    
+    # end of symbol list loop
 
-print("\n=================== Sorted Result =======================")  
-print("{:<10} {:<10}".format('Symbol', 'Value'))
-print("-" * 20)
-for item in sorted_dataValue:
-    print("{:<10} {:.8f}".format(item[0], item[1]))
+    """ print("\n=================== Data value pair =======================")   
+    print(dataValue)   """  
 
-fileName = path+"Options_sorted_"+currentDatetime+".txt"
-with open(fileName, 'w') as f:
-    f.write("{:<8} {:<8}\n".format('Symbol', 'Value'))
-    f.write("-" * 20 + "\n")
+    sorted_dataValue = sorted(dataValue.items(), key=lambda x:x[1], reverse=True )
+    #print(sorted_dataValue)
 
+    abnormalList = []
     for item in sorted_dataValue:
-        f.write("{:<8} {:.8f}\n".format(item[0], item[1]))
-f.close()
+        symbol = item[0]                            
+        # find data by item
+        # find abnormal bid valve
+        # add the item into abnormal list
+        print(symbol)
+    
+        
+    print("\n=================== Sorted Result =======================")  
+    print("{:<10} {:<10}".format('Symbol', 'Value'))
+    print("-" * 20)
+    for item in sorted_dataValue:
+        print("{:<10} {:.8f}".format(item[0], item[1]))
+
+    fileName = path+"Options_sorted_"+currentDatetime+".txt"
+    with open(fileName, 'w') as f:
+        f.write("{:<8} {:<8}\n".format('Symbol', 'Value'))
+        f.write("-" * 20 + "\n")
+
+        for item in sorted_dataValue:
+            f.write("{:<8} {:.8f}\n".format(item[0], item[1]))
+    f.close()
+
+if __name__ == "__main__":
+    # Explicitly call the main() function
+    main()
