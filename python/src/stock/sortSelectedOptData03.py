@@ -33,16 +33,20 @@ def read_file_contents(file_name):
 
 
 def get_calls_and_puts(symbol: str, date: str) -> tuple:
-    calls = options.get_calls(symbol, date)
-    puts = options.get_puts(symbol, date)
+    try:
+        calls = options.get_calls(symbol, date)
+        puts = options.get_puts(symbol, date)
 
-    # Replace '-' with 0
-    calls = calls.replace("-", 0)
-    puts = puts.replace("-", 0)
-    
-    # Extract the desired columns
-    new_calls = calls[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
-    new_puts = puts[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
+        # Replace '-' with 0
+        calls = calls.replace("-", 0)
+        puts = puts.replace("-", 0)
+        
+        # Extract the desired columns
+        new_calls = calls[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
+        new_puts = puts[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
+    except:
+        new_calls = None
+        new_puts = None
 
     return new_calls, new_puts
 
@@ -105,9 +109,6 @@ def main():
     # Read the INI file
     config.read(config_file_path)
 
-    """ config = configparser.ConfigParser()
-    config.read('d:/chatpm/python/src/sortoptions.ini')
-    """
     # Access values from the 'logging' section
     log_level = config.get('logging', 'level')
     log_file = config.get('logging', 'file')
@@ -118,7 +119,6 @@ def main():
     bidlimit = float(config.get('filters', 'bidlimit'))
     askbidratio = float(config.get('filters', 'askbidratio'))
     lowestbid = float(config.get('filters', 'lowestbid'))
-
 
     #path = "python/data/"
     #path = "d:/chatpm/python/data/"
@@ -143,12 +143,12 @@ def main():
 
     # Read the filename from the blacklist file
     #blacklist_file = path+"blacklist.txt"
-    file_to_read = read_file_contents(blacklist_file)
+    #file_to_read = read_file_contents(blacklist_file)
 
-    if file_to_read:
+    if blacklist_file:
         # Read the contents of the specified file
-        listFileName = path+file_to_read
-        with open(listFileName, "r", encoding='utf-8-sig') as f:
+        #listFileName = path+file_to_read
+        with open(blacklist_file, "r", encoding='utf-8-sig') as f:
             for line in f:
                 symbolList.append(line.strip())
         f.close
@@ -164,7 +164,10 @@ def main():
         try:    
             # Get calls and puts for given stock at contract date
             calls, puts = get_calls_and_puts(symbol, contractDate)
-
+            if( calls is None or puts is None):
+                print("Nothing returns for it.")
+                continue
+            
             """ print("\n========================= CALLS ===============================")
             print(calls)
             print("\n========================== PUTS ===============================")
@@ -183,13 +186,13 @@ def main():
             #k = (c+p)/2.0
             if (c is None or p is None):
               c,p = 0.0, 0.0
-            r = (c+p)/2.0/current_price * 1000
-            dataValue[symbol] = r
+            r = (c+p)/2.0/current_price * 100000.0
+            dataValue[symbol] = round(r,1)
             
         except ValueError:
             #code that handle the exception
             print("No tables found!")
-            dataValue[symbol] = 0.0    
+            dataValue[symbol] = -1.0    
     # end of symbol list loop
 
     """ print("\n=================== Data value pair =======================")   
@@ -211,17 +214,30 @@ def main():
     print("{:<10} {:<10}".format('Symbol', 'Value'))
     print("-" * 20)
     for item in sorted_dataValue:
-        print("{:<10} {:.8f}".format(item[0], item[1]))
+        print("{:<10} {:.1f}".format(item[0], item[1]))
+        #print("{:<10} {:.1f}".format(item[0], round(float(item[1]), 1)))
 
     fileName = path+"Options_sorted_"+currentDatetime+".txt"
     with open(fileName, 'w') as f:
-        f.write("{:<8} {:<8}\n".format('Symbol', 'Value'))
+        f.write("{:<6} {:<6}\n".format('Symbol', 'Value'))
         f.write("-" * 20 + "\n")
 
         for item in sorted_dataValue:
-            f.write("{:<8} {:.8f}\n".format(item[0], item[1]))
+            f.write("{:<6} {:.1f}\n".format(item[0], round(float(item[1]), 1)))
     f.close()
-
+    
+    # Concatenate contact name and number for each row into a single line separated by a comma
+    count = 1
+    output_line = ""
+    for item in sorted_dataValue:
+        output_line = output_line+item[0]+" "+str(item[1])+","
+        count = count + 1
+        if (count >= 10):
+            break
+    print(output_line)
+    print(len(output_line))    
+        
+        
 if __name__ == "__main__":
     # Explicitly call the main() function
     main()
