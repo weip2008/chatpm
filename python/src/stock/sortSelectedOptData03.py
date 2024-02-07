@@ -7,8 +7,9 @@ import pandas as pd
 #import numpy as np
 import configparser
 import os
+import requests
 import logging
-
+import time
 
 warnings.filterwarnings('ignore')
 
@@ -96,6 +97,27 @@ def calculatePut(df, given_price):
     p = pp/given_price
     return p
 
+def send_sms(phone_number, message):
+    url = "https://textbelt.com/text"
+    payload = {
+        "phone": phone_number,
+        "message": message,
+        "key": "698c67cf236deb82c5d696e5b05142dc10f696e6flTuF0pX2j8LcR0bH4FVGOiuM", 
+    }
+    
+    try:
+        response = requests.post(url, data=payload)
+        if response.status_code == 200:
+            print("SMS sent successfully to "+ phone_number)
+            return 0
+        else:
+            print(f"Failed to send SMS. Error: {response.text}")
+            return 1
+    except requests.RequestException as e:
+        print(f"Error sending SMS: {e}")
+        return 2
+        
+        
 def main():   
     global asklimit, bidlimit, askbidratio,lowestbid
     
@@ -123,12 +145,11 @@ def main():
     lowestbid = float(config.get('filters', 'lowestbid'))
     logfile = config.get('logging', 'file')
     loglevel = config.get('logging', 'level')
+    notificationSwitch = bool(config.get('notification', 'switch'))
+    countrycode = config.get('notification','countrycode')
+    phonenumbers = config.get('notification','phonenumbers')
 
-    # Configure logging
-    #logging.basicConfig(filename=logfile, level=loglevel, 
-    #                    format='%(asctime)s - %(levelname)s - %(message)s')
-    logging.basicConfig(filename=logfile, level=loglevel, format='%(message)s')
-
+    
     #path = "python/data/"
     #path = "d:/chatpm/python/data/"
     today = date.today()
@@ -138,8 +159,16 @@ def main():
     #print("Next Friday is "+next_friday_string)
 
     now = datetime.now()
-    currentDatetime = now.strftime("%m%d%Y-%H%M")
+    currentDatetime = now.strftime("%Y%m%d-%H%M")
     print(f"Current date time is " + currentDatetime)
+    
+    fileName = path+"Options_sorted_"+currentDatetime+".txt"
+    logfile = path+"log_"+currentDatetime+".log"
+    # Configure logging
+    #logging.basicConfig(filename=logfile, level=loglevel, 
+    #                    format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=logfile, level=loglevel, format='%(message)s')
+
 
     # If it's Friday and after 4PM (16:00), then jump to next Friday
     if now.weekday() == 4 and now.time() > datetime.time(datetime(1, 1, 1, 16, 0)):
@@ -234,7 +263,7 @@ def main():
         print("{:<10} {:.1f}".format(item[0], item[1]))
         #print("{:<10} {:.1f}".format(item[0], round(float(item[1]), 1)))
 
-    fileName = path+"Options_sorted_"+currentDatetime+".txt"
+    
     ''' with open(fileName, 'w') as f:
         f.write("{:<6} {:<6}\n".format('Symbol', 'Value'))
         f.write("-" * 20 + "\n")
@@ -265,7 +294,7 @@ def main():
     for item in sorted_dataValue:
         output_line = output_line+item[0]+str(item[1])+","
         count = count + 1
-        if (count >= 10):
+        if (count >= 12):
             break
     #print(output_line)
     #print(len(output_line))
@@ -273,6 +302,18 @@ def main():
     logging.info("%s",output_line)    
     logging.info("%d",len(output_line))
         
+    #Send SMS notification messages
+    if(notificationSwitch):
+         # Split the string to obtain individual phone numbers
+        numbers_list = [number.strip() for number in phonenumbers.split(',')] 
+        
+        for number in numbers_list:
+            returncode = send_sms("+"+countrycode+number, output_line)
+            if (returncode == 0):
+                logging.info("SMS sent successfully to %s", number)
+            else:
+                logging.info("SMS sent failed to %s", number)
+            time.sleep(1)
         
 if __name__ == "__main__":
     # Explicitly call the main() function

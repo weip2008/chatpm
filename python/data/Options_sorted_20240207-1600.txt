@@ -1,0 +1,14 @@
+Symbol Value 
+--------------------
+PBR    33.9
+AZN    24.6
+BABA   17.1
+SHOP   13.9
+PDD    9.6
+TSM    6.4
+SONY   6.1
+BUD    5.8
+NVO    4.9
+SHEL   4.3
+ASML   0.6
+HSBC   0.0
