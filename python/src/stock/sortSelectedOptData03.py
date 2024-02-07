@@ -7,6 +7,8 @@ import pandas as pd
 #import numpy as np
 import configparser
 import os
+import logging
+
 
 warnings.filterwarnings('ignore')
 
@@ -119,6 +121,13 @@ def main():
     bidlimit = float(config.get('filters', 'bidlimit'))
     askbidratio = float(config.get('filters', 'askbidratio'))
     lowestbid = float(config.get('filters', 'lowestbid'))
+    logfile = config.get('logging', 'file')
+    loglevel = config.get('logging', 'level')
+
+    # Configure logging
+    #logging.basicConfig(filename=logfile, level=loglevel, 
+    #                    format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=logfile, level=loglevel, format='%(message)s')
 
     #path = "python/data/"
     #path = "d:/chatpm/python/data/"
@@ -176,10 +185,19 @@ def main():
             filtered_calls = filter_rows_by_price(calls, current_price)
             filtered_puts = filter_rows_by_price(puts, current_price)
 
-            print(f"\n================== Filtered CALLS for ${current_price:.2f}====================" )
+            ''' print(f"\n================== Filtered CALLS for ${current_price:.2f}====================" )
             print(filtered_calls)
             print(f"\n================== Filtered PUTS for ${current_price:.2f}=====================")
             print(filtered_puts)
+             '''
+            #log same info
+            logging.info("%s============== Filtered CALLS for $%.2f==================",symbol, current_price)
+            logstr = filtered_calls.to_string()
+            logging.info(logstr)
+            logging.info("%s============== Filtered PUTS for $%.2f===================",symbol, current_price)
+            logstr = filtered_puts.to_string()
+            logging.info(logstr)
+            
             
             c = calculateCall(filtered_calls, current_price)
             p = calculatePut(filtered_puts, current_price)
@@ -199,43 +217,61 @@ def main():
     print(dataValue)   """  
 
     sorted_dataValue = sorted(dataValue.items(), key=lambda x:x[1], reverse=True )
-    #print(sorted_dataValue)
 
-    abnormalList = []
+    ''' abnormalList = []
     for item in sorted_dataValue:
         symbol = item[0]                            
         # find data by item
         # find abnormal bid valve
         # add the item into abnormal list
-        print(symbol)
+        print(symbol) '''
     
         
     print("\n=================== Sorted Result =======================")  
     print("{:<10} {:<10}".format('Symbol', 'Value'))
-    print("-" * 20)
+    print("-" * 12)
     for item in sorted_dataValue:
         print("{:<10} {:.1f}".format(item[0], item[1]))
         #print("{:<10} {:.1f}".format(item[0], round(float(item[1]), 1)))
 
     fileName = path+"Options_sorted_"+currentDatetime+".txt"
+    ''' with open(fileName, 'w') as f:
+        f.write("{:<6} {:<6}\n".format('Symbol', 'Value'))
+        f.write("-" * 20 + "\n")
+
+        for item in sorted_dataValue:
+            #f.write("{:<6} {:.1f}\n".format(item[0], round(float(item[1]), 1)))
+            f.write("{:<6} {:.1f}\n".format(item[0], item[1]))
+    f.close() '''
+    
+   
+    # Write data into log file
+    logging.info("=================== Sorted Result =======================")
     with open(fileName, 'w') as f:
         f.write("{:<6} {:<6}\n".format('Symbol', 'Value'))
         f.write("-" * 20 + "\n")
 
         for item in sorted_dataValue:
-            f.write("{:<6} {:.1f}\n".format(item[0], round(float(item[1]), 1)))
+            #log_f.write("{:<6} {:.1f}\n".format(item[0], round(float(item[1]), 1)))
+            f.write("{:<6} {:.1f}\n".format(item[0], item[1]))
+            
+            # Log each line written to the file
+            logging.info(" %s %.1f", item[0], item[1])
     f.close()
-    
+        
     # Concatenate contact name and number for each row into a single line separated by a comma
     count = 1
     output_line = ""
     for item in sorted_dataValue:
-        output_line = output_line+item[0]+" "+str(item[1])+","
+        output_line = output_line+item[0]+str(item[1])+","
         count = count + 1
         if (count >= 10):
             break
-    print(output_line)
-    print(len(output_line))    
+    #print(output_line)
+    #print(len(output_line))
+    logging.info(" ======== Notification =============")
+    logging.info("%s",output_line)    
+    logging.info("%d",len(output_line))
         
         
 if __name__ == "__main__":
