@@ -68,33 +68,39 @@ def filter_rows_by_price(df, given_price):
 def calculateCall(df, given_price):
     global asklimit, bidlimit, askbidratio, lowestbid
     
-    # Get the the last row with strike price higher than the given price
-    higher_rows = df[df["Strike"] >= given_price].head(1)
-    index = higher_rows.index[0]
-    bid = higher_rows.at[index, "Bid"]
-    ask = higher_rows.at[index, "Ask"]
-    if (bid < lowestbid):
-        return None
-    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
-        return None
-    cp = (bid + ask) / 2.0
-    c = cp/given_price
+    try:
+        # Get the the last row with strike price higher than the given price
+        higher_rows = df[df["Strike"] >= given_price].head(1)
+        index = higher_rows.index[0]
+        bid = higher_rows.at[index, "Bid"]
+        ask = higher_rows.at[index, "Ask"]
+        if (bid < lowestbid):
+            return None
+        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+            return None
+        cp = (bid + ask) / 2.0
+        c = cp/given_price
+    except:    
+        c = 0.0
     return c
 
 def calculatePut(df, given_price):
     global asklimit, bidlimit, askbidratio, lowestbid
     
-    # Get the last row with strike price lower than the given price
-    lower_rows = df[df["Strike"] <= given_price].tail(1)
-    index = lower_rows.index[0]
-    bid = lower_rows.at[index, "Bid"]
-    ask = lower_rows.at[index, "Ask"]
-    if (bid < lowestbid):
-        return None
-    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
-        return None
-    pp = (bid + ask) / 2.0
-    p = pp/given_price
+    try:
+        # Get the last row with strike price lower than the given price
+        lower_rows = df[df["Strike"] <= given_price].tail(1)
+        index = lower_rows.index[0]
+        bid = lower_rows.at[index, "Bid"]
+        ask = lower_rows.at[index, "Ask"]
+        if (bid < lowestbid):
+            return None
+        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+            return None
+        pp = (bid + ask) / 2.0
+        p = pp/given_price
+    except:
+        p = 0.0    
     return p
 
 def send_sms(phone_number, message):
