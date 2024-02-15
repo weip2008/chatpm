@@ -28,12 +28,12 @@ def read_file_contents(file_name):
             return contents
     except FileNotFoundError:
         print(f"Error: File '{file_name}' not found.")
+        logging.info("File %s not found!", file_name)
         return None
     except Exception as e:
         print(f"Error: {e}")
+        logging.info("Error: %s", e)
         return None
-
-
 
 def get_calls_and_puts(symbol: str, date: str) -> tuple:
     try:
@@ -44,7 +44,7 @@ def get_calls_and_puts(symbol: str, date: str) -> tuple:
         calls = calls.replace("-", 0)
         puts = puts.replace("-", 0)
         
-        # Extract the desired columns
+        # Extract the desired columns     
         new_calls = calls[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
         new_puts = puts[["Contract Name", "Strike", "Last Price", "Bid", "Ask", "Volume"]]
     except:
@@ -65,7 +65,7 @@ def filter_rows_by_price(df, given_price):
     #result.index += 1
     return result
 
-def calculateCall(df, given_price):
+""" def calculateCall(df, given_price):
     global asklimit, bidlimit, askbidratio, lowestbid
     
     try:
@@ -82,9 +82,28 @@ def calculateCall(df, given_price):
         c = cp/given_price
     except:    
         c = 0.0
+    return c """
+
+def calculateCall(df, given_price):
+    global asklimit, bidlimit, askbidratio, lowestbid   
+    c = 0.0
+    
+    # Get the the last row with strike price higher than the given price
+    higher_rows = df[df["Strike"] >= given_price].head(1)
+    if (not higher_rows.empty):
+        index = higher_rows.index[0]
+        bid = higher_rows.at[index, "Bid"]
+        ask = higher_rows.at[index, "Ask"]
+        if (bid < lowestbid):
+            return 0.0
+        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+            return 0.0
+        cp = (bid + ask) / 2.0
+        c = cp/given_price
+    
     return c
 
-def calculatePut(df, given_price):
+""" def calculatePut(df, given_price):
     global asklimit, bidlimit, askbidratio, lowestbid
     
     try:
@@ -102,6 +121,26 @@ def calculatePut(df, given_price):
     except:
         p = 0.0    
     return p
+ """
+
+def calculatePut(df, given_price):
+    global asklimit, bidlimit, askbidratio, lowestbid
+    p = 0.0  
+    
+    # Get the last row with strike price lower than the given price
+    lower_rows = df[df["Strike"] <= given_price].tail(1)
+    if (not lower_rows.empty):
+        index = lower_rows.index[0]
+        bid = lower_rows.at[index, "Bid"]
+        ask = lower_rows.at[index, "Ask"]
+        if (bid < lowestbid):
+            return 0.0
+        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+            return 0.0
+        pp = (bid + ask) / 2.0
+        p = pp/given_price
+   
+    return p
 
 def send_sms(phone_number, message):
     url = "https://textbelt.com/text"
@@ -115,12 +154,15 @@ def send_sms(phone_number, message):
         response = requests.post(url, data=payload)
         if response.status_code == 200:
             print("SMS sent successfully to "+ phone_number)
+            #logging.info("SMS sent successfully to %s", phone_number)
             return 0
         else:
             print(f"Failed to send SMS. Error: {response.text}")
+            logging.info("Failed to send SMS. Error: %s", response.text)
             return 1
     except requests.RequestException as e:
         print(f"Error sending SMS: {e}")
+        logging.info("Error sending SMS: %s", e)
         return 2
         
         
@@ -140,8 +182,6 @@ def main():
     config.read(config_file_path)
 
     # Access values from the 'logging' section
-    log_level = config.get('logging', 'level')
-    log_file = config.get('logging', 'file')
     path = config.get('sortoptions','path')
     listfile = config.get('sortoptions', 'listfile')
     blacklist_file = path+listfile 
@@ -151,7 +191,8 @@ def main():
     lowestbid = float(config.get('filters', 'lowestbid'))
     logfile = config.get('logging', 'file')
     loglevel = config.get('logging', 'level')
-    notificationSwitch = bool(config.get('notification', 'switch'))
+    Switch = int(config.get('notification', 'switch'))
+    notificationSwitch = bool(Switch)
     countrycode = config.get('notification','countrycode')
     phonenumbers = config.get('notification','phonenumbers')
 
@@ -210,6 +251,7 @@ def main():
             calls, puts = get_calls_and_puts(symbol, contractDate)
             if( calls is None or puts is None):
                 print("Nothing returns for it.")
+                logging.info("============== Nothing returns for %s ==================",symbol)
                 continue
             
             """ print("\n========================= CALLS ===============================")
@@ -235,16 +277,17 @@ def main():
             
             
             c = calculateCall(filtered_calls, current_price)
-            p = calculatePut(filtered_puts, current_price)
+            p = calculatePut(filtered_puts, current_price)            
+            #if (c is None or p is None):
+            #  c,p = 0.0, 0.0
             #k = (c+p)/2.0
-            if (c is None or p is None):
-              c,p = 0.0, 0.0
             r = (c+p)/2.0/current_price * 100000.0
             dataValue[symbol] = round(r,1)
             
         except ValueError:
             #code that handle the exception
             print("No tables found!")
+            logging.info("***No table found for %s", symbol)
             dataValue[symbol] = -1.0    
     # end of symbol list loop
 
