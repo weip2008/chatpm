@@ -248,10 +248,10 @@ def main():
         print("\n================================================================\n")
         print("\nSymbol:"+symbol)
         
-        current_price = get_live_price(symbol)
-        print(f"Current price for {symbol} is ${current_price:.2f}")
-        
         try:    
+            current_price = get_live_price(symbol)
+            print(f"Current price for {symbol} is ${current_price:.2f}")
+        
             # Get calls and puts for given stock at contract date
             calls, puts = get_calls_and_puts(symbol, contractDate)
             if( calls is None or puts is None):
