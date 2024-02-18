@@ -83,24 +83,32 @@ def filter_rows_by_price(df, given_price):
     except:    
         c = 0.0
     return c """
-
+    
+def validate(df):
+    bid, ask = 0.0, 0.0    
+   
+    if (not df.empty):
+        index = df.index[0]
+        try:
+            bid = float(df.at[index, "Bid"])
+            ask = float(df.at[index, "Ask"])
+        except:
+            pass
+    return bid, ask
+    
 def calculateCall(df, given_price):
     global asklimit, bidlimit, askbidratio, lowestbid   
     c = 0.0
-    
     # Get the the last row with strike price higher than the given price
     higher_rows = df[df["Strike"] >= given_price].head(1)
-    if (not higher_rows.empty):
-        index = higher_rows.index[0]
-        bid = higher_rows.at[index, "Bid"]
-        ask = higher_rows.at[index, "Ask"]
-        if (bid < lowestbid):
-            return 0.0
-        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
-            return 0.0
-        cp = (bid + ask) / 2.0
-        c = cp/given_price
-    
+    bid, ask = validate(higher_rows)
+    if (bid < lowestbid):
+        return 0.0
+    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+        return 0.0
+    cp = (bid + ask) / 2.0
+    c = cp/given_price
+
     return c
 
 """ def calculatePut(df, given_price):
@@ -129,16 +137,13 @@ def calculatePut(df, given_price):
     
     # Get the last row with strike price lower than the given price
     lower_rows = df[df["Strike"] <= given_price].tail(1)
-    if (not lower_rows.empty):
-        index = lower_rows.index[0]
-        bid = lower_rows.at[index, "Bid"]
-        ask = lower_rows.at[index, "Ask"]
-        if (bid < lowestbid):
-            return 0.0
-        if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
-            return 0.0
-        pp = (bid + ask) / 2.0
-        p = pp/given_price
+    bid, ask = validate(lower_rows)
+    if (bid < lowestbid):
+        return 0.0
+    if (bid> bidlimit and ask > asklimit) and ((ask-bid)/bid>askbidratio): 
+        return 0.0
+    pp = (bid + ask) / 2.0
+    p = pp/given_price
    
     return p
 
@@ -243,10 +248,10 @@ def main():
         print("\n================================================================\n")
         print("\nSymbol:"+symbol)
         
-        current_price = get_live_price(symbol)
-        print(f"Current price for {symbol} is ${current_price:.2f}")
-        
         try:    
+            current_price = get_live_price(symbol)
+            print(f"Current price for {symbol} is ${current_price:.2f}")
+        
             # Get calls and puts for given stock at contract date
             calls, puts = get_calls_and_puts(symbol, contractDate)
             if( calls is None or puts is None):
@@ -362,7 +367,7 @@ def main():
                 logging.info("SMS sent successfully to %s", number)
             else:
                 logging.info("SMS sent failed to %s", number)
-            time.sleep(1)
+            time.sleep(2)
         
 if __name__ == "__main__":
     # Explicitly call the main() function
