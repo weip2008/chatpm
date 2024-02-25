@@ -21,7 +21,7 @@ ticker_name="^GSPC"
 #ticker_name = "F"
 
 # Define the start and end dates for the data retrieval
-start_date = dt.datetime(2019, 1, 1)
+start_date = dt.datetime(2023, 1, 1)
 end_date = dt.datetime(2024, 1, 1)
 #start_date = dt.datetime.today()- dt.timedelta(1825) # getting data of around 5 years.
 #end_date = dt.datetime.today()
@@ -33,7 +33,7 @@ print("--------------")
 print(ohlc.tail())
 print("# of rows in ohlc:",len(ohlc))
 
-r_bars = df_to_renko(ohlc, 50)
+r_bars = df_to_renko(ohlc, 10)
 print('# of rows in DF(Renko):',len(r_bars))
 
 # r_bars.to_excel("output.xlsx", index=False)
