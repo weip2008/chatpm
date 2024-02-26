@@ -18,11 +18,11 @@ def df_to_renko(data, n):
 ticker_name="^GSPC" 
 
 # Define the start and end dates for the data retrieval
-start_date = dt.datetime(2023, 6, 1)
+start_date = dt.datetime(2018, 1, 1)
 end_date = dt.datetime(2024, 1, 1)
 ohlc = yf.download(ticker_name, start_date, end_date)
 
-r_bars = df_to_renko(ohlc, 5)
+r_bars = df_to_renko(ohlc, 50)
 
 plt.figure(figsize=(18, 9))
 
